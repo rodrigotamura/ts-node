@@ -1,4 +1,15 @@
-import { Schema, model } from 'mongoose'
+import { Schema, model, Document } from 'mongoose'
+
+// declaring interface, we can see these properties/methods in intellisense
+// when we use UserSchema, because of
+// export default model<UserInterface>('User', UserSchema)
+//                           👆
+interface UserInterface extends Document {
+    email?: string,
+    firstName?: string,
+    lastName?: string,
+    fullName(): string
+}
 
 const UserSchema = new Schema({
   email: String,
@@ -8,4 +19,9 @@ const UserSchema = new Schema({
   timestamps: true
 })
 
-export default model('User', UserSchema)
+// adding new method for UserSchema
+UserSchema.methods.fullName = function (): string {
+  return `${this.firstName} ${this.lastName}`
+}
+
+export default model<UserInterface>('User', UserSchema)
